@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>WOTI — 坦克世界玩家人格测试</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ===== 首页 ===== -->
+    <section id="page-home" class="page active">
+      <div class="container">
+        <div class="home-badge">W.O.T.I</div>
+        <h1 class="home-title">坦克世界玩家人格测试</h1>
+        <p class="home-subtitle">World of Tanks Indicator</p>
+        <div class="home-desc">
+          <p>每个坦克世界玩家的灵魂里，都藏着一辆命中注定的战车。</p>
+          <p>20 道题，揭示你在战场上（和生活中）的真实人格。</p>
+        </div>
+        <div class="home-dims" id="home-dims">
+          <!-- 维度标签由 JS 动态渲染 -->
+        </div>
+        <button class="btn-primary" onclick="startQuiz()">开始测试</button>
+        <button class="btn-secondary" onclick="showPage('page-wall')">留言墙</button>
+        <p class="home-disclaimer">仅供娱乐，不构成任何心理或游戏建议 :)</p>
+        <a class="home-admin-link" href="#admin">管理面板</a>
+      </div>
+    </section>
+
+    <!-- ===== 答题页 ===== -->
+    <section id="page-quiz" class="page">
+      <div class="container">
+        <div class="quiz-header">
+          <button class="btn-back" onclick="prevQuestion()">&#8592;</button>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <span class="quiz-count" id="quiz-count">1/20</span>
+        </div>
+        <div class="quiz-chapter" id="quiz-chapter"></div>
+        <div class="quiz-question" id="quiz-question"></div>
+        <div class="quiz-options" id="quiz-options"></div>
+      </div>
+    </section>
+
+    <!-- ===== 加载页 ===== -->
+    <section id="page-loading" class="page">
+      <div class="container loading-container">
+        <div class="loading-icon">
+          <div class="tank-silhouette"></div>
+        </div>
+        <p class="loading-text">正在分析你的坦克灵魂...</p>
+        <div class="loading-dots">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 结果页 ===== -->
+    <section id="page-result" class="page">
+      <div class="container">
+        <div class="result-badge" id="result-badge"></div>
+        <h2 class="result-title" id="result-title"></h2>
+        <p class="result-oneliner" id="result-oneliner"></p>
+        <div class="result-tags" id="result-tags"></div>
+        <div class="result-desc" id="result-desc"></div>
+        <div class="result-vehicle">
+          <span class="vehicle-label">代表车辆</span>
+          <span class="vehicle-name" id="result-vehicle"></span>
+        </div>
+        <div class="result-quote" id="result-quote"></div>
+
+        <!-- 维度得分条 -->
+        <div class="result-dimensions" id="result-dimensions"></div>
+
+        <div class="result-actions">
+          <button class="btn-primary" onclick="generateShareCard()">生成分享卡片</button>
+          <button class="btn-secondary" onclick="showPage('page-wall')">去留言墙</button>
+          <button class="btn-secondary" onclick="restartQuiz()">重新测试</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 分享卡片弹窗 ===== -->
+    <div id="share-modal" class="modal hidden">
+      <div class="modal-overlay" onclick="closeShareModal()"></div>
+      <div class="modal-content">
+        <button class="modal-close" onclick="closeShareModal()">&times;</button>
+        <canvas id="share-canvas"></canvas>
+        <p class="share-tip">长按图片保存到相册，分享给你的车组好友！</p>
+        <button class="btn-primary" onclick="downloadShareCard()">保存图片</button>
+      </div>
+    </div>
+
+    <!-- ===== 留言墙 ===== -->
+    <section id="page-wall" class="page">
+      <div class="container">
+        <div class="wall-header">
+          <button class="btn-back" onclick="showPage('page-home')">&#8592;</button>
+          <h2 class="wall-title">车组留言墙</h2>
+        </div>
+        <div class="wall-form">
+          <input type="text" id="wall-nickname" class="wall-input" placeholder="你的游戏昵称" maxlength="20">
+          <select id="wall-type" class="wall-select">
+            <option value="">选择你的WOTI类型（可选）</option>
+          </select>
+          <textarea id="wall-message" class="wall-textarea" placeholder="说点什么..." maxlength="200" rows="3"></textarea>
+          <button class="btn-primary" onclick="postMessage()">发射！</button>
+        </div>
+        <div class="wall-filters">
+          <button class="filter-btn active" data-filter="all">全部</button>
+          <button class="filter-btn" data-filter="mine">我的</button>
+        </div>
+        <div class="wall-messages" id="wall-messages">
+          <p class="wall-empty">还没有留言，来做第一个发言的车长吧！</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 管理面板 ===== -->
+    <section id="page-admin" class="page">
+      <div class="container">
+        <div class="wall-header">
+          <button class="btn-back" onclick="showPage('page-home');location.hash=''">&#8592;</button>
+          <h2 class="wall-title">管理面板</h2>
+        </div>
+
+        <!-- 登录 -->
+        <div id="admin-login" class="admin-login-box">
+          <p class="admin-login-hint">请输入管理密码</p>
+          <input type="password" id="admin-pwd" class="wall-input" placeholder="密码" onkeydown="if(event.key==='Enter')adminDoLogin()">
+          <button class="btn-primary" onclick="adminDoLogin()">验证</button>
+        </div>
+
+        <!-- 管理内容（验证后显示）-->
+        <div id="admin-panel" style="display:none">
+          <div class="admin-toolbar">
+            <button class="btn-secondary" onclick="adminDoLogout()">退出登录</button>
+          </div>
+
+          <!-- 逻辑概览 -->
+          <div class="admin-section">
+            <h3 class="admin-section-title">逻辑概览</h3>
+            <p class="admin-hint">答题 → 维度得分 → 组合匹配 → 人格结果</p>
+            <div class="logic-flow" id="logic-flow">
+              <!-- JS 动态渲染 -->
+            </div>
+          </div>
+
+          <!-- 维度编辑 -->
+          <div class="admin-section">
+            <h3 class="admin-section-title">维度设置</h3>
+            <p class="admin-hint">修改维度名称、字母和描述。每个维度有两个极（A极/B极），答题得分高于50%走A极，否则走B极。</p>
+            <div id="admin-dims-list"></div>
+            <button class="btn-primary" style="margin-top:12px" onclick="saveAdminDims()">保存维度</button>
+          </div>
+
+          <!-- 人格类型编辑 -->
+          <div class="admin-section">
+            <h3 class="admin-section-title">人格类型</h3>
+            <div class="admin-io-bar">
+              <button class="filter-btn" onclick="exportTypesJson()">导出 JSON</button>
+              <button class="filter-btn" onclick="importTypesJson()">导入 JSON</button>
+            </div>
+            <div id="admin-types-list"></div>
+          </div>
+
+          <!-- 题库编辑 -->
+          <div class="admin-section">
+            <h3 class="admin-section-title">题库</h3>
+            <div class="admin-io-bar">
+              <button class="filter-btn" onclick="exportQuestionsJson()">导出 JSON</button>
+              <button class="filter-btn" onclick="importQuestionsJson()">导入 JSON</button>
+            </div>
+            <div id="admin-questions-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/supabase.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

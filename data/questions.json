@@ -1,0 +1,214 @@
+{
+  "dimensions": [
+    { "key": "AD", "nameA": "进攻", "letterA": "A", "nameB": "防守", "letterB": "D", "description": "战斗风格：冲锋莽夫 vs 蹲坑苟王" },
+    { "key": "ST", "nameA": "独狼", "letterA": "S", "nameB": "团队", "letterB": "T", "description": "社交偏好：单野高手 vs 开黑达人" },
+    { "key": "CR", "nameA": "沉稳", "letterA": "C", "nameB": "暴躁", "letterB": "R", "description": "心态类型：佛系养生 vs 键盘粉碎" },
+    { "key": "HF", "nameA": "硬核", "letterA": "H", "nameB": "娱乐", "letterB": "F", "description": "投入方式：数据极客 vs 快乐至上" }
+  ],
+  "chapters": [
+    { "id": "battlefield", "name": "战场上的你", "subtitle": "CHAPTER 1" },
+    { "id": "life", "name": "生活中的你", "subtitle": "CHAPTER 2" }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "chapter": "battlefield",
+      "dimension": "AD",
+      "text": "你的重坦在城区拐角遇到3辆敌车，你会——",
+      "options": [
+        { "text": "管他呢！冲过去先撞翻一个再说", "value": "A" },
+        { "text": "倒车入库，掏出手机给队友发定位", "value": "D" }
+      ]
+    },
+    {
+      "id": 2,
+      "chapter": "battlefield",
+      "dimension": "AD",
+      "text": "你最常玩的车辆类型是——",
+      "options": [
+        { "text": "中坦/轻坦，侦查冲锋就是我的浪漫", "value": "A" },
+        { "text": "重坦/TD，站稳了输出才是正义", "value": "D" }
+      ]
+    },
+    {
+      "id": 3,
+      "chapter": "life",
+      "dimension": "AD",
+      "text": "朋友推荐你一家从没去过的黑暗料理店——",
+      "options": [
+        { "text": "走！越奇怪越好，不好吃也是一段故事", "value": "A" },
+        { "text": "先看100条差评压压惊，再做决定", "value": "D" }
+      ]
+    },
+    {
+      "id": 4,
+      "chapter": "battlefield",
+      "dimension": "AD",
+      "text": "残局1v3，你的血量只剩一丝——",
+      "options": [
+        { "text": "拼了！冲出去怒送一血，死也要死在冲锋的路上", "value": "A" },
+        { "text": "找个犄角旮旯卡住，用走位拖到队友叹服", "value": "D" }
+      ]
+    },
+    {
+      "id": 5,
+      "chapter": "life",
+      "dimension": "AD",
+      "text": "超市大促，最后一件打折商品在别人手里——",
+      "options": [
+        { "text": "大步流星走过去：亲，这个我先看到的", "value": "A" },
+        { "text": "默默在旁边等着，万一他放下了呢", "value": "D" }
+      ]
+    },
+    {
+      "id": 6,
+      "chapter": "battlefield",
+      "dimension": "ST",
+      "text": "上线发现好友全不在线——",
+      "options": [
+        { "text": "无所谓，我一个人就是一支军队", "value": "S" },
+        { "text": "打开微信群发：有人吗有人吗有人吗？？？", "value": "T" }
+      ]
+    },
+    {
+      "id": 7,
+      "chapter": "life",
+      "dimension": "ST",
+      "text": "理想的周末是——",
+      "options": [
+        { "text": "一个人打游戏/看剧/发呆，谁都别找我", "value": "S" },
+        { "text": "群里喊人开黑/聚餐/出去浪", "value": "T" }
+      ]
+    },
+    {
+      "id": 8,
+      "chapter": "battlefield",
+      "dimension": "ST",
+      "text": "你觉得赢下比赛最关键的是——",
+      "options": [
+        { "text": "自己够强就行了，队友不行我来carry", "value": "S" },
+        { "text": "配合最重要，5个菜鸡配合好打赢1个大神", "value": "T" }
+      ]
+    },
+    {
+      "id": 9,
+      "chapter": "life",
+      "dimension": "ST",
+      "text": "工作/学习遇到难题——",
+      "options": [
+        { "text": "自己闷头研究，百度谷歌翻个底朝天", "value": "S" },
+        { "text": "先问问同事朋友，集思广益效率高", "value": "T" }
+      ]
+    },
+    {
+      "id": 10,
+      "chapter": "battlefield",
+      "dimension": "ST",
+      "text": "你最有成就感的时刻——",
+      "options": [
+        { "text": "一个人扛线，对面3辆车愣是没过来", "value": "S" },
+        { "text": "和队友打出教科书配合，完美团灭对方", "value": "T" }
+      ]
+    },
+    {
+      "id": 11,
+      "chapter": "battlefield",
+      "dimension": "CR",
+      "text": "队友在你眼皮底下抢了你追了半天的人头——",
+      "options": [
+        { "text": "没事儿，赢了就行，大度.jpg", "value": "C" },
+        { "text": "当场在公屏打出2000字小作文问候他全家", "value": "R" }
+      ]
+    },
+    {
+      "id": 12,
+      "chapter": "life",
+      "dimension": "CR",
+      "text": "排队买奶茶，前面有人明目张胆插队——",
+      "options": [
+        { "text": "算了，世界和平，多等两分钟也不会死", "value": "C" },
+        { "text": "麻烦排队谢谢！（音量足够全店听见）", "value": "R" }
+      ]
+    },
+    {
+      "id": 13,
+      "chapter": "battlefield",
+      "dimension": "CR",
+      "text": "连输5把，心态快炸了——",
+      "options": [
+        { "text": "关游戏去摸鱼，明天又是新的一天", "value": "C" },
+        { "text": "不信邪！接着打！今天不赢一把不睡觉", "value": "R" }
+      ]
+    },
+    {
+      "id": 14,
+      "chapter": "life",
+      "dimension": "CR",
+      "text": "你支持的队伍在决赛被绝杀了——",
+      "options": [
+        { "text": "叹口气，默默关掉直播去睡觉", "value": "C" },
+        { "text": "原地起飞！摔手机！发100条朋友圈！", "value": "R" }
+      ]
+    },
+    {
+      "id": 15,
+      "chapter": "battlefield",
+      "dimension": "CR",
+      "text": "火炮连续两发精准命中你——",
+      "options": [
+        { "text": "换个位置走，火炮有什么好气的", "value": "C" },
+        { "text": "当场打字@火炮：你搁这导弹制导呢？", "value": "R" }
+      ]
+    },
+    {
+      "id": 16,
+      "chapter": "battlefield",
+      "dimension": "HF",
+      "text": "打完一场比赛后你第一反应是——",
+      "options": [
+        { "text": "打开数据面板：命中率多少？伤害多少？WN8又涨了没？", "value": "H" },
+        { "text": "爽就完事了，数据是什么？能吃吗？", "value": "F" }
+      ]
+    },
+    {
+      "id": 17,
+      "chapter": "life",
+      "dimension": "HF",
+      "text": "你买东西的风格是——",
+      "options": [
+        { "text": "货比三家看评测看参数，写个Excel对比表", "value": "H" },
+        { "text": "看着顺眼就买了，人生苦短及时行乐", "value": "F" }
+      ]
+    },
+    {
+      "id": 18,
+      "chapter": "battlefield",
+      "dimension": "HF",
+      "text": "关于坦克的配件和技能加点——",
+      "options": [
+        { "text": "研究最优配件组合、技能优先级，追求极致输出", "value": "H" },
+        { "text": "系统推荐啥就用啥，差不多得了", "value": "F" }
+      ]
+    },
+    {
+      "id": 19,
+      "chapter": "life",
+      "dimension": "HF",
+      "text": "关于你玩过的游戏——",
+      "options": [
+        { "text": "我能给你讲三小时隐藏机制和数据公式", "value": "H" },
+        { "text": "我连主线剧情都没打完就去玩下一个了", "value": "F" }
+      ]
+    },
+    {
+      "id": 20,
+      "chapter": "battlefield",
+      "dimension": "HF",
+      "text": "你对自己的胜率和WN8评分——",
+      "options": [
+        { "text": "非常在意，低于目标值今天就不下线", "value": "H" },
+        { "text": "那是啥？我只在意今天开不开心", "value": "F" }
+      ]
+    }
+  ]
+}

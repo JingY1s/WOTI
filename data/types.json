@@ -1,0 +1,218 @@
+{
+  "types": [
+    {
+      "code": "RUSH",
+      "name": "闪电冲锋",
+      "dims": { "AD": "A", "ST": "S", "CR": "R", "HF": "H" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "T-54",
+      "quote": "待补充",
+      "mirror": "WOLF",
+      "opposite": "SALT"
+    },
+    {
+      "code": "YOLO",
+      "name": "快乐莽夫",
+      "dims": { "AD": "A", "ST": "S", "CR": "R", "HF": "F" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "ELC AMX",
+      "quote": "待补充",
+      "mirror": "BOOM",
+      "opposite": "CAMP"
+    },
+    {
+      "code": "GOLD",
+      "name": "弹药专家",
+      "dims": { "AD": "A", "ST": "S", "CR": "C", "HF": "H" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "Leopard 1",
+      "quote": "待补充",
+      "mirror": "MAUS",
+      "opposite": "TILT"
+    },
+    {
+      "code": "FLIP",
+      "name": "快乐翻车",
+      "dims": { "AD": "A", "ST": "S", "CR": "C", "HF": "F" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "Cromwell",
+      "quote": "待补充",
+      "mirror": "SPOT",
+      "opposite": "HULL"
+    },
+    {
+      "code": "FURY",
+      "name": "暴怒指挥",
+      "dims": { "AD": "A", "ST": "T", "CR": "R", "HF": "H" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "IS-7",
+      "quote": "待补充",
+      "mirror": "RUSH",
+      "opposite": "ARTY"
+    },
+    {
+      "code": "BOOM",
+      "name": "全图烟花",
+      "dims": { "AD": "A", "ST": "T", "CR": "R", "HF": "F" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "KV-2",
+      "quote": "待补充",
+      "mirror": "YOLO",
+      "opposite": "MAUS"
+    },
+    {
+      "code": "WOLF",
+      "name": "钢铁狼群",
+      "dims": { "AD": "A", "ST": "T", "CR": "C", "HF": "H" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "Object 907",
+      "quote": "待补充",
+      "mirror": "RUSH",
+      "opposite": "HORN"
+    },
+    {
+      "code": "SPOT",
+      "name": "全图之眼",
+      "dims": { "AD": "A", "ST": "T", "CR": "C", "HF": "F" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "T-100 LT",
+      "quote": "待补充",
+      "mirror": "FLIP",
+      "opposite": "AMMO"
+    },
+    {
+      "code": "HULL",
+      "name": "钢铁刺猬",
+      "dims": { "AD": "D", "ST": "S", "CR": "R", "HF": "H" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "T95",
+      "quote": "待补充",
+      "mirror": "CAMP",
+      "opposite": "FLIP"
+    },
+    {
+      "code": "TILT",
+      "name": "血压拉满",
+      "dims": { "AD": "D", "ST": "S", "CR": "R", "HF": "F" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "TOG II*",
+      "quote": "待补充",
+      "mirror": "SALT",
+      "opposite": "GOLD"
+    },
+    {
+      "code": "CAMP",
+      "name": "草丛大师",
+      "dims": { "AD": "D", "ST": "S", "CR": "C", "HF": "H" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "Strv 103B",
+      "quote": "待补充",
+      "mirror": "HULL",
+      "opposite": "YOLO"
+    },
+    {
+      "code": "SALT",
+      "name": "佛系咸鱼",
+      "dims": { "AD": "D", "ST": "S", "CR": "C", "HF": "F" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "Maus",
+      "quote": "待补充",
+      "mirror": "TILT",
+      "opposite": "RUSH"
+    },
+    {
+      "code": "AMMO",
+      "name": "弹药审计",
+      "dims": { "AD": "D", "ST": "T", "CR": "R", "HF": "H" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "Super Conqueror",
+      "quote": "待补充",
+      "mirror": "MAUS",
+      "opposite": "SPOT"
+    },
+    {
+      "code": "HORN",
+      "name": "喇叭队长",
+      "dims": { "AD": "D", "ST": "T", "CR": "R", "HF": "F" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "Type 5 Heavy",
+      "quote": "待补充",
+      "mirror": "ARTY",
+      "opposite": "WOLF"
+    },
+    {
+      "code": "MAUS",
+      "name": "鼠式巨兽",
+      "dims": { "AD": "D", "ST": "T", "CR": "C", "HF": "H" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "Maus",
+      "quote": "待补充",
+      "mirror": "AMMO",
+      "opposite": "BOOM"
+    },
+    {
+      "code": "ARTY",
+      "name": "天降正义",
+      "dims": { "AD": "D", "ST": "T", "CR": "C", "HF": "F" },
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "M44",
+      "quote": "待补充",
+      "mirror": "HORN",
+      "opposite": "FURY"
+    }
+  ],
+  "hidden": [
+    {
+      "code": "E100",
+      "name": "待补充",
+      "trigger": "all_extreme",
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "E 100",
+      "quote": "待补充"
+    },
+    {
+      "code": "DUCK",
+      "name": "待补充",
+      "trigger": "custom",
+      "oneliner": "待补充",
+      "tags": ["待补充"],
+      "description": "待补充",
+      "vehicle": "待补充",
+      "quote": "待补充"
+    }
+  ]
+}
