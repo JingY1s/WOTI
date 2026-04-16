@@ -29,24 +29,27 @@ function getDims() {
 // ===== 初始化 =====
 document.addEventListener('DOMContentLoaded', async () => {
   try {
+    console.log('[init] 开始加载数据, supabaseEnabled:', supabaseEnabled());
     // 尝试 Supabase，失败则回退本地 JSON
     if (supabaseEnabled()) {
       try {
         const [qData, tData] = await Promise.all([sbLoadQuestions(), sbLoadTypes()]);
+        console.log('[init] Supabase 返回:', { qCount: qData.questions.length, tCount: tData.types.length });
         if (qData.questions.length > 0 && tData.types.length > 0) {
           questionsData = qData;
           typesData = tData;
           useSupabase = true;
-          console.log('Supabase 数据加载成功');
+          console.log('[init] ✅ Supabase 数据加载成功');
         } else {
           throw new Error('Supabase 数据为空，回退本地');
         }
       } catch (e) {
-        console.warn('Supabase 加载失败，使用本地数据:', e.message);
+        console.warn('[init] ⚠️ Supabase 加载失败:', e.message);
       }
     }
 
     if (!useSupabase) {
+      console.log('[init] 使用本地 JSON 兜底');
       const [qRes, tRes] = await Promise.all([
         fetch('data/questions.json').then(r => r.json()),
         fetch('data/types.json').then(r => r.json())
@@ -54,6 +57,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       questionsData = qRes;
       typesData = tRes;
     }
+
+    console.log('[init] 最终数据:', { types: typesData?.types?.length, questions: questionsData?.questions?.length });
 
     initWallTypeSelect();
     initWallFilters();
@@ -622,6 +627,17 @@ function adminDoLogout() {
 }
 
 function loadAdminData() {
+  console.log('[admin] loadAdminData called', { typesData, questionsData, useSupabase });
+  if (!typesData || !typesData.types) {
+    console.error('[admin] typesData 未加载', typesData);
+    alert('数据加载失败，请刷新页面重试');
+    return;
+  }
+  if (!questionsData || !questionsData.questions) {
+    console.error('[admin] questionsData 未加载', questionsData);
+    alert('题库未加载，请刷新页面重试');
+    return;
+  }
   adminEditingTypes = JSON.parse(JSON.stringify(typesData.types));
   if (typesData.hidden) {
     typesData.hidden.forEach(h => {
@@ -631,6 +647,10 @@ function loadAdminData() {
     });
   }
   adminEditingQuestions = JSON.parse(JSON.stringify(questionsData.questions));
+  console.log('[admin] 数据准备完成', {
+    types: adminEditingTypes.length,
+    questions: adminEditingQuestions.length
+  });
   renderAdminDims();
   renderLogicFlow();
   renderAdminTypes();
@@ -719,15 +739,31 @@ function renderAdminDims() {
 function adminDimChanged(el) {
   const idx = parseInt(el.dataset.didx);
   const field = el.dataset.dfield;
-  if (!questionsData.dimensions) return;
+  // 如果还没有 dimensions（从 Supabase 加载但表为空），用 getDims() 初始化
+  if (!questionsData.dimensions) {
+    questionsData.dimensions = getDims();
+  }
   questionsData.dimensions[idx][field] = el.value;
 }
 
-function saveAdminDims() {
-  // 刷新首页维度标签和逻辑概览
-  renderHomeDims();
-  renderLogicFlow();
-  alert('维度已更新（仅当前会话，请导出 JSON 保留）');
+async function saveAdminDims() {
+  if (useSupabase) {
+    try {
+      await sbSaveAllDimensions(questionsData.dimensions || getDims());
+      // 重新拉取确认
+      const fresh = await sbLoadQuestions();
+      if (fresh.dimensions) questionsData.dimensions = fresh.dimensions;
+      renderHomeDims();
+      renderLogicFlow();
+      alert('维度已保存到云端');
+    } catch (e) {
+      alert('保存失败: ' + e.message);
+    }
+  } else {
+    renderHomeDims();
+    renderLogicFlow();
+    alert('维度已更新（仅当前会话，请导出 JSON 保留）');
+  }
 }
 
 function renderAdminTypes() {

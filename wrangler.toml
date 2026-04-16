@@ -1,5 +1,10 @@
 name = "woti"
 compatibility_date = "2024-11-01"
 
+routes = [
+  { pattern = "11-woti.icu", custom_domain = true },
+  { pattern = "www.11-woti.icu", custom_domain = true }
+]
+
 [assets]
 directory = "./"

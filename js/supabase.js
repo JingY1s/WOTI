@@ -5,8 +5,8 @@
 
 // ===== 配置 =====
 // 部署前替换为你自己的 Supabase 项目信息
-const SUPABASE_URL = '';   // 例: https://xxxxx.supabase.co
-const SUPABASE_ANON_KEY = ''; // 在 Supabase Dashboard → Settings → API 获取
+const SUPABASE_URL = 'https://htzavddjrbrdtvrtplqa.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0emF2ZGRqcmJyZHR2cnRwbHFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzMzUxMzMsImV4cCI6MjA5MTkxMTEzM30.tIQRn0u8nU2EdMbVeleJSGoS40HuHefAlVgszuneFRs';
 
 // 管理密码（简单方案：硬编码或存 config 表）
 const ADMIN_PASSWORD = 'woti2026';
@@ -37,7 +37,15 @@ async function sbFetch(path, options = {}) {
     const err = await res.text();
     throw new Error('Supabase 错误: ' + res.status + ' ' + err);
   }
-  return res.json();
+  // 处理空响应（204 No Content 或 return=minimal）
+  if (res.status === 204) return null;
+  const text = await res.text();
+  if (!text) return null;
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    return null;
+  }
 }
 
 // ===== Types CRUD =====
@@ -112,7 +120,24 @@ async function sbLoadQuestions() {
     life: { id: 'life', name: '生活中的你', subtitle: 'CHAPTER 2' }
   };
   const chapters = [...new Set(rows.map(r => r.chapter))].map(c => chapterMap[c] || { id: c, name: c, subtitle: '' });
-  return { chapters, questions };
+
+  // 同时加载维度
+  let dimensions = null;
+  try {
+    const dimRows = await sbFetch('dimensions?order=sort_order.asc&select=*');
+    dimensions = dimRows.map(d => ({
+      key: d.key,
+      letterA: d.letter_a,
+      nameA: d.name_a,
+      letterB: d.letter_b,
+      nameB: d.name_b,
+      description: d.description || ''
+    }));
+  } catch (e) {
+    console.warn('[sb] dimensions 加载失败，使用默认值:', e.message);
+  }
+
+  return { chapters, questions, dimensions };
 }
 
 async function sbSaveQuestion(q) {
@@ -130,6 +155,26 @@ async function sbSaveQuestion(q) {
   return sbFetch('questions?id=eq.' + q.id, {
     method: 'PATCH',
     body: JSON.stringify(row),
+    admin: true
+  });
+}
+
+// ===== Dimensions CRUD =====
+async function sbSaveAllDimensions(dims) {
+  // 全量替换：删除所有再插入
+  await sbFetch('dimensions?key=neq.___placeholder___', { method: 'DELETE', admin: true });
+  const rows = dims.map((d, i) => ({
+    key: d.key,
+    letter_a: d.letterA,
+    name_a: d.nameA,
+    letter_b: d.letterB,
+    name_b: d.nameB,
+    description: d.description || '',
+    sort_order: i
+  }));
+  return sbFetch('dimensions', {
+    method: 'POST',
+    body: JSON.stringify(rows),
     admin: true
   });
 }
