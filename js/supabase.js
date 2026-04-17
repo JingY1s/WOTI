@@ -93,7 +93,9 @@ async function sbSaveType(typeObj) {
     trigger_rule: typeObj.trigger || null,
     updated_at: new Date().toISOString()
   };
-  return sbFetch('types?code=eq.' + typeObj.code, {
+  // 用 _originalCode 定位记录，支持 code 被修改的情况
+  const patchCode = typeObj._originalCode || typeObj.code;
+  return sbFetch('types?code=eq.' + patchCode, {
     method: 'PATCH',
     body: JSON.stringify(row),
     admin: true

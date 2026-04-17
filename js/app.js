@@ -646,6 +646,8 @@ function loadAdminData() {
       adminEditingTypes.push(copy);
     });
   }
+  // 记录原始 code，用于 code 被修改后仍能定位数据库记录
+  adminEditingTypes.forEach(t => { t._originalCode = t.code; });
   adminEditingQuestions = JSON.parse(JSON.stringify(questionsData.questions));
   console.log('[admin] 数据准备完成', {
     types: adminEditingTypes.length,
@@ -716,7 +718,7 @@ function renderAdminDims() {
       '</div>' +
       '<div class="admin-card-body" style="display:none">' +
         '<div class="admin-dim-row">' +
-          '<label>维度 Key<input type="text" class="wall-input" value="' + escAttr(d.key) + '" data-didx="' + i + '" data-dfield="key" onchange="adminDimChanged(this)"></label>' +
+          '<label>维度 Key<input type="text" class="wall-input" value="' + escAttr(d.key) + '" readonly style="opacity:0.5;cursor:not-allowed" title="Key 是内部标识符，不可修改，否则会破坏人格类型映射"></label>' +
         '</div>' +
         '<div class="admin-dim-pair">' +
           '<div class="admin-dim-half">' +
@@ -750,9 +752,6 @@ async function saveAdminDims() {
   if (useSupabase) {
     try {
       await sbSaveAllDimensions(questionsData.dimensions || getDims());
-      // 重新拉取确认
-      const fresh = await sbLoadQuestions();
-      if (fresh.dimensions) questionsData.dimensions = fresh.dimensions;
       renderHomeDims();
       renderLogicFlow();
       alert('维度已保存到云端');
@@ -769,16 +768,32 @@ async function saveAdminDims() {
 function renderAdminTypes() {
   const list = document.getElementById('admin-types-list');
   list.innerHTML = '';
+  const dims = getDims();
   adminEditingTypes.forEach((t, i) => {
     const card = document.createElement('div');
     card.className = 'admin-card';
+    // 维度选择行：每个维度一个下拉，选 letterA 或 letterB，强制一排不换行
+    const dimSelects = dims.map(d => {
+      const curVal = (t.dims && t.dims[d.key]) || '';
+      return '<label style="flex:1">' + escapeHtml(d.key) +
+        '<select class="wall-select" data-field="dim_' + escAttr(d.key) + '" data-idx="' + i + '" onchange="adminTypeChanged(this)">' +
+          '<option value=""' + (!curVal ? ' selected' : '') + '>?</option>' +
+          '<option value="' + escAttr(d.letterA) + '"' + (curVal === d.letterA ? ' selected' : '') + '>' + escapeHtml(d.letterA + '·' + d.nameA) + '</option>' +
+          '<option value="' + escAttr(d.letterB) + '"' + (curVal === d.letterB ? ' selected' : '') + '>' + escapeHtml(d.letterB + '·' + d.nameB) + '</option>' +
+        '</select></label>';
+    }).join('');
     card.innerHTML =
       '<div class="admin-card-header" onclick="toggleAdminCard(this)">' +
         '<strong>' + escapeHtml(t.code) + '</strong> · ' + escapeHtml(t.name) +
         (t.is_hidden ? ' <span class="result-tag">隐藏</span>' : '') +
       '</div>' +
       '<div class="admin-card-body" style="display:none">' +
-        '<label>名称<input type="text" class="wall-input" value="' + escAttr(t.name) + '" data-field="name" data-idx="' + i + '" onchange="adminTypeChanged(this)"></label>' +
+        '<div style="display:flex;gap:12px;align-items:flex-end;margin-bottom:8px">' +
+          '<label style="flex:1">外显代码（4字母）<input type="text" class="wall-input" value="' + escAttr(t.code) + '" maxlength="8" data-field="code" data-idx="' + i + '" onchange="adminTypeChanged(this)"></label>' +
+          '<label style="flex:2">名称<input type="text" class="wall-input" value="' + escAttr(t.name) + '" data-field="name" data-idx="' + i + '" onchange="adminTypeChanged(this)"></label>' +
+        '</div>' +
+        '<div style="margin-bottom:4px;font-size:13px;color:var(--text-dim)">维度归属（A极=维度第一字母，B极=维度第二字母）</div>' +
+        '<div style="display:flex;gap:6px;margin-bottom:12px">' + dimSelects + '</div>' +
         '<label>一句话<input type="text" class="wall-input" value="' + escAttr(t.oneliner) + '" data-field="oneliner" data-idx="' + i + '" onchange="adminTypeChanged(this)"></label>' +
         '<label>标签（逗号分隔）<input type="text" class="wall-input" value="' + escAttr(Array.isArray(t.tags) ? t.tags.join(', ') : '') + '" data-field="tags" data-idx="' + i + '" onchange="adminTypeChanged(this)"></label>' +
         '<label>描述<textarea class="wall-textarea" rows="4" data-field="description" data-idx="' + i + '" onchange="adminTypeChanged(this)">' + escapeHtml(t.description || '') + '</textarea></label>' +
@@ -793,23 +808,29 @@ function renderAdminTypes() {
 function renderAdminQuestions() {
   const list = document.getElementById('admin-questions-list');
   list.innerHTML = '';
+  const dims = getDims();
   adminEditingQuestions.forEach((q, i) => {
     const card = document.createElement('div');
     card.className = 'admin-card';
+    const dimOptions = dims.map(d =>
+      '<option value="' + escAttr(d.key) + '"' + (q.dimension === d.key ? ' selected' : '') + '>' +
+      escapeHtml(d.key + ' ' + d.nameA + '/' + d.nameB) + '</option>'
+    ).join('');
+    // 找当前维度，用于在选项标签上标注对应字母
+    const curDim = dims.find(d => d.key === q.dimension) || dims[0];
+    const labelA = '选项A（→ ' + (curDim ? curDim.letterA + ' ' + curDim.nameA : 'A极') + '）';
+    const labelB = '选项B（→ ' + (curDim ? curDim.letterB + ' ' + curDim.nameB : 'B极') + '）';
     card.innerHTML =
       '<div class="admin-card-header" onclick="toggleAdminCard(this)">' +
         '<strong>Q' + q.id + '</strong> · ' + escapeHtml(q.text.slice(0, 30)) + '...' +
       '</div>' +
       '<div class="admin-card-body" style="display:none">' +
         '<label>维度<select class="wall-select" data-field="dimension" data-idx="' + i + '" onchange="adminQChanged(this)">' +
-          '<option value="AD"' + (q.dimension === 'AD' ? ' selected' : '') + '>AD 进攻/防守</option>' +
-          '<option value="ST"' + (q.dimension === 'ST' ? ' selected' : '') + '>ST 独狼/团队</option>' +
-          '<option value="CR"' + (q.dimension === 'CR' ? ' selected' : '') + '>CR 沉稳/暴躁</option>' +
-          '<option value="HF"' + (q.dimension === 'HF' ? ' selected' : '') + '>HF 硬核/娱乐</option>' +
+          dimOptions +
         '</select></label>' +
         '<label>题目<textarea class="wall-textarea" rows="2" data-field="text" data-idx="' + i + '" onchange="adminQChanged(this)">' + escapeHtml(q.text) + '</textarea></label>' +
-        '<label>选项A<input type="text" class="wall-input" value="' + escAttr(q.options[0].text) + '" data-field="optA" data-idx="' + i + '" onchange="adminQChanged(this)"></label>' +
-        '<label>选项B<input type="text" class="wall-input" value="' + escAttr(q.options[1].text) + '" data-field="optB" data-idx="' + i + '" onchange="adminQChanged(this)"></label>' +
+        '<label>' + escapeHtml(labelA) + '<input type="text" class="wall-input" value="' + escAttr(q.options[0].text) + '" data-field="optA" data-idx="' + i + '" onchange="adminQChanged(this)"></label>' +
+        '<label>' + escapeHtml(labelB) + '<input type="text" class="wall-input" value="' + escAttr(q.options[1].text) + '" data-field="optB" data-idx="' + i + '" onchange="adminQChanged(this)"></label>' +
         '<button class="btn-primary" style="margin-top:8px" onclick="saveAdminQuestion(' + i + ')">保存此题</button>' +
       '</div>';
     list.appendChild(card);
@@ -826,6 +847,11 @@ function adminTypeChanged(el) {
   const field = el.dataset.field;
   if (field === 'tags') {
     adminEditingTypes[idx].tags = el.value.split(',').map(s => s.trim()).filter(Boolean);
+  } else if (field.startsWith('dim_')) {
+    // 维度字母修改，如 dim_AD → dims.AD
+    const dimKey = field.slice(4);
+    if (!adminEditingTypes[idx].dims) adminEditingTypes[idx].dims = {};
+    adminEditingTypes[idx].dims[dimKey] = el.value;
   } else {
     adminEditingTypes[idx][field] = el.value;
   }
@@ -841,13 +867,21 @@ function adminQChanged(el) {
 
 async function saveAdminType(idx) {
   const t = adminEditingTypes[idx];
+  const oldCode = t._originalCode || t.code; // 先保存旧 code，再改引用
   if (useSupabase) {
     try {
       await sbSaveType(t);
+      // 保存成功后更新 _originalCode（下次再改 code 时用新值定位）
+      adminEditingTypes[idx]._originalCode = t.code;
+      // 用 oldCode 定位 typesData 里的旧记录并替换
+      if (t.is_hidden) {
+        const hiddenIdx = typesData.hidden.findIndex(h => h.code === oldCode);
+        if (hiddenIdx >= 0) typesData.hidden[hiddenIdx] = { ...t };
+      } else {
+        const typeIdx = typesData.types.findIndex(tp => tp.code === oldCode);
+        if (typeIdx >= 0) typesData.types[typeIdx] = { ...t };
+      }
       alert('已保存到云端');
-      // 刷新内存数据
-      const freshTypes = await sbLoadTypes();
-      typesData = freshTypes;
     } catch (e) {
       alert('保存失败: ' + e.message);
     }
@@ -863,9 +897,10 @@ async function saveAdminQuestion(idx) {
   if (useSupabase) {
     try {
       await sbSaveQuestion(q);
+      // 直接更新内存，不重新拉取全量数据
+      const qIdx = questionsData.questions.findIndex(x => x.id === q.id);
+      if (qIdx >= 0) questionsData.questions[qIdx] = { ...q };
       alert('已保存到云端');
-      const freshQ = await sbLoadQuestions();
-      questionsData = freshQ;
     } catch (e) {
       alert('保存失败: ' + e.message);
     }
